@@ -1,3 +1,13 @@
+def add_edge(graph, source, target):
+    """Adds an edge from node source to node target in graph"""
+    if source not in graph:
+        graph[source] = []
+    if target not in graph:
+        graph[target] = []
+
+    graph[source].append(target)
+
+
 def topological_sort(graph):
     """Returns a topologically sorted list of all nodes in the graph"""
     from collections import deque

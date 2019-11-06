@@ -1,3 +1,3 @@
-from .criticalpath import topological_sort
+from .criticalpath import add_edge, topological_sort
 
-__all__ = [topological_sort]
+__all__ = [add_edge, topological_sort]
