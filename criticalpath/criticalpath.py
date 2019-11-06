@@ -1,5 +1,5 @@
 def add_edge(graph, source, target):
-    """Adds an edge from source to target in the graph"""
+    """Add an edge from source to target in the graph"""
     if source not in graph:
         graph[source] = []
     if target not in graph:
@@ -9,7 +9,7 @@ def add_edge(graph, source, target):
 
 
 def topological_sort(graph):
-    """Returns a topologically sorted list of all nodes in the graph"""
+    """Return a topologically sorted list of all nodes in the graph"""
     from collections import deque
 
     in_degree = _count_incoming_edges(graph)
@@ -40,7 +40,7 @@ def _count_incoming_edges(graph):
 
 
 def find_critical_path(in_graph, weights):
-    """Returns the critical path in graph considering given weights."""
+    """Return the critical path through the graph considering given weights"""
     import copy
     graph = copy.deepcopy(in_graph)
 
