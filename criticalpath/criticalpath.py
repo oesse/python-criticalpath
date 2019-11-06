@@ -1,5 +1,5 @@
 def add_edge(graph, source, target):
-    """Adds an edge from node source to node target in graph"""
+    """Adds an edge from source to target in the graph"""
     if source not in graph:
         graph[source] = []
     if target not in graph:
@@ -37,3 +37,74 @@ def _count_incoming_edges(graph):
             in_degree[adjacent_node] += 1
 
     return in_degree
+
+
+def find_critical_path(in_graph, weights):
+    """Returns the critical path in graph considering given weights."""
+    import copy
+    graph = copy.deepcopy(in_graph)
+
+    virtual_sink = _add_virtual_sink(graph)
+
+    top_order = topological_sort(graph)
+    roots = _take_roots(top_order, graph)
+
+    distances = {node: (0 if node in roots else float('-inf'))
+                 for node in list(graph)}
+    predecessor_nodes = {node: i for i, node in enumerate(list(graph))}
+
+    for node in top_order:
+        for adjacent_node in graph[node]:
+            d = distances[node] + weights.get(node, 0)
+            if distances[adjacent_node] < d:
+                distances[adjacent_node] = d
+                predecessor_nodes[adjacent_node] = node
+
+    return _construct_path(predecessor_nodes, virtual_sink)
+
+
+def _add_virtual_sink(graph):
+    sinks = [node for node, adjacent_nodes in graph.items()
+             if len(adjacent_nodes) == 0]
+
+    virtual_sink = _unique_key(graph)
+    for sink in sinks:
+        add_edge(graph, sink, virtual_sink)
+
+    return virtual_sink
+
+
+def _unique_key(graph):
+    import random
+    import string
+
+    return ''.join(random.sample(string.ascii_letters, 5))
+
+
+def _take_roots(top_order, graph):
+    seen_nodes = set()
+    roots = []
+    for node in top_order:
+        if node in seen_nodes:
+            break
+
+        for adjacent_node in graph[node]:
+            seen_nodes.add(adjacent_node)
+
+        roots.append(node)
+    return roots
+
+
+def _construct_path(predecessor_nodes, target_node):
+    current_node = predecessor_nodes[target_node]
+    print(predecessor_nodes)
+    path = [current_node]
+    while True:
+        predecessor = predecessor_nodes[current_node]
+        if predecessor == current_node:
+            break
+        path.append(predecessor)
+        current_node = predecessor
+
+    path.reverse()
+    return path
