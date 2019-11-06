@@ -1,13 +1,14 @@
 def topological_sort(graph):
     """Returns a topologically sorted list of all nodes in the graph"""
+    from collections import deque
 
     in_degree = _count_incoming_edges(graph)
-    node_queue = [node for node, degree in in_degree.items()
-                  if degree == 0]
+    node_queue = deque([node for node, degree in in_degree.items()
+                        if degree == 0])
 
     top_order = []
     while len(node_queue) != 0:
-        node = node_queue.pop(0)
+        node = node_queue.popleft()
         top_order.append(node)
 
         for adjacent_node in graph[node]:
