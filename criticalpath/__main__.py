@@ -3,6 +3,7 @@ import criticalpath
 import argparse
 
 parser = argparse.ArgumentParser(
+    prog='criticalpath',
     description='Calculate critical path in a yocto build.'
 )
 parser.add_argument('depfile', help='dependency graph in graphviz dot format')
