@@ -51,7 +51,7 @@ def find_critical_path(in_graph, weights):
 
     distances = {node: (0 if node in roots else float('-inf'))
                  for node in list(graph)}
-    predecessor_nodes = {node: i for i, node in enumerate(list(graph))}
+    predecessor_nodes = {node: node for node in list(graph)}
 
     for node in top_order:
         for adjacent_node in graph[node]:
@@ -97,7 +97,6 @@ def _take_roots(top_order, graph):
 
 def _construct_path(predecessor_nodes, target_node):
     current_node = predecessor_nodes[target_node]
-    print(predecessor_nodes)
     path = [current_node]
     while True:
         predecessor = predecessor_nodes[current_node]

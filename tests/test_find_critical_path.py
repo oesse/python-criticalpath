@@ -27,3 +27,17 @@ def test_find_critical_path_missing_weights_are_ignored():
                3: 1}
 
     assert find_critical_path(graph, weights) == [0, 2, 3]
+
+
+def test_find_critical_path_string_node_ids():
+    graph = {}
+    add_edge(graph, "a", "b")
+    add_edge(graph, "a", "c")
+    add_edge(graph, "b", "d")
+    add_edge(graph, "c", "d")
+    weights = {"a": 1,
+               "b": 2,
+               "c": 1,
+               "d": 1}
+
+    assert find_critical_path(graph, weights) == ["a", "b", "d"]
