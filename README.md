@@ -36,6 +36,44 @@ It is possible to specify multiple buildstats directories, so that you can
 reasonably combine, for example, a fetchall and an actual build in the same
 critical path analysis.
 
+### Visualizing the results
+
+The tool produces one line for each package step including the step name and
+the elapsed time in seconds, e.g.:
+```sh
+...
+glibc.do_compile 1223.24
+glibc.do_configure 7.93
+glibc.do_prepare_recipe_sysroot 0.3
+libgcc-initial.do_populate_sysroot 0.73
+libgcc-initial.do_extra_symlinks 0.02
+...
+```
+
+You can use your favorite plotting program to show the top 10 longest running
+tasks on the critical path, for example using the tools `sort`, `head`, and
+`gnuplot`:
+```sh
+python -m criticalpath ... \
+  | sort -nrk 2 | head -n 10 > top10.dat
+
+gnuplot <<EOF
+set terminal pngcairo size 960,720 noenhanced font 'Verdana,10'
+set output 'top10.png'
+
+set rmargin 2
+set style fill solid
+set style data histograms
+set xtic rotate by 45 right
+set ylabel 'elapsed time / s'
+set title 'Top 10 longest running tasks on critical path' font 'Verdana-Bold,12'
+unset key
+plot 'top10.dat' using 2:xtic(1)
+EOF
+```
+![Example Top 10](https://raw.githubusercontent.com/oesse/python-criticalpath/master/example_top10.png)
+
+
 ### Dependencies
 
 In order to run the tool you only need python >= 3.5.
