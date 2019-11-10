@@ -51,3 +51,12 @@ def test_load_graph_with_node_statement():
         "b.node": [],
     }
     assert graph == expected
+
+
+def test_load_graph_allow_trailing_newline_after_graph():
+    dot_stream = io.StringIO("""digraph depends {
+}
+""")
+    graph = load_graph_from_dot(dot_stream)
+
+    assert graph == {}

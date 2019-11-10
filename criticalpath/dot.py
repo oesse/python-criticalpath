@@ -25,7 +25,7 @@ def load_graph_from_dot(dot_stream):
         elif not node_pattern.match(line):
             raise ParseError("expected edge or node statement")
 
-    if lines[-1] != "}":
+    if lines[-1].strip() != "}":
         raise ParseError("expected '}'")
 
     return graph
