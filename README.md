@@ -34,7 +34,16 @@ python -m criticalpath <path/to/task-depends.dot> <path/to/buildstats-dir> ...
 
 It is possible to specify multiple buildstats directories, so that you can
 reasonably combine, for example, a fetchall and an actual build in the same
-critical path analysis.
+critical path analysis, for example:
+```sh
+python -m criticalpath build/task-depends.dot build/tmp/buildstats/*
+```
+
+Note that if you have multiple python versions installed on your system, you
+might need to use `python3`:
+```sh
+python3 -m criticalpath ...
+```
 
 ### Visualizing the results
 
