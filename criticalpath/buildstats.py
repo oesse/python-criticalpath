@@ -78,7 +78,7 @@ class BuildstatsCache:
 
 def _directory_to_package(directory):
     match = re.match(r'(.*)-([0-9]|git).*', directory)
-    return match.group(1)
+    return match.group(1) if match else None
 
 
 def _split_package_step_id(package_step_id):
