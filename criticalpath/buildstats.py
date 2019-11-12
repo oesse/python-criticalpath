@@ -35,11 +35,10 @@ class BuildstatsCache:
 
         for search_directory in search_directories:
             for directory in self.filesystem.directories(search_directory):
-                package_name = _directory_to_package(directory)
-                if package_name not in package_directories:
-                    package_directories[package_name] = []
+                if directory not in package_directories:
+                    package_directories[directory] = []
 
-                package_directories[package_name].append(
+                package_directories[directory].append(
                     os.path.join(search_directory, directory)
                 )
 
@@ -51,15 +50,22 @@ class BuildstatsCache:
 
         package_name, step_name = _split_package_step_id(package_step_id)
         package_stats_file = self._find_stats_file(package_name, step_name)
-        return (self._load_elapsed_time_from_file(package_stats_file)
-                if package_stats_file else 0)
+
+        if not package_stats_file:
+            return 0
+
+        return self._load_elapsed_time_from_file(package_stats_file)
 
     def _find_stats_file(self, package_name, step_name):
-        if package_name not in self.package_directories:
+        directories = [path
+                       for dir_name, paths in self.package_directories.items()
+                       for path in paths
+                       if _package_matches(package_name, dir_name)]
+
+        if len(directories) == 0:
             return None
 
-        search_directories = self.package_directories[package_name]
-        for directory in search_directories:
+        for directory in reversed(directories):
             filename = os.path.join(directory, step_name)
             if self.filesystem.path_exists(filename):
                 return filename
@@ -76,11 +82,14 @@ class BuildstatsCache:
             "Could not find 'Elapsed time' in '{}'".format(filename))
 
 
-def _directory_to_package(directory):
-    match = re.match(r'(.*)-([0-9]|git|edk).*', directory)
-    return match.group(1) if match else None
-
-
 def _split_package_step_id(package_step_id):
     dot_pos = package_step_id.rfind(".")
     return package_step_id[:dot_pos], package_step_id[dot_pos + 1:]
+
+
+def _package_matches(package_name, dir_name):
+    dash_pos = dir_name.rfind('-', 0, -1)
+    while dash_pos > 0:
+        if dir_name[:dash_pos] == package_name:
+            return True
+        dash_pos = dir_name.rfind('-', 0, dash_pos)
