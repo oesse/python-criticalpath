@@ -77,7 +77,7 @@ class BuildstatsCache:
 
 
 def _directory_to_package(directory):
-    match = re.match(r'(.*)-([0-9]|git).*', directory)
+    match = re.match(r'(.*)-([0-9]|git|edk).*', directory)
     return match.group(1) if match else None
 
 
