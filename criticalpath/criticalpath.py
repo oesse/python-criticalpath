@@ -41,15 +41,9 @@ def _count_incoming_edges(graph):
 
 def find_critical_path(in_graph, weights, source=None, target=None):
     """Return the critical path through the graph considering given weights"""
-    import copy
 
     in_target = target
-
-    if not target:
-        graph = copy.deepcopy(in_graph)
-        target = _add_virtual_sink(graph)
-    else:
-        graph = in_graph
+    graph, target = _setup_target(in_graph, in_target)
 
     top_order = topological_sort(graph)
     if not source:
@@ -73,6 +67,19 @@ def find_critical_path(in_graph, weights, source=None, target=None):
         path.append(in_target)
 
     return path
+
+
+def _setup_target(in_graph, target):
+    import copy
+    if not target:
+        # We need to add a virtual target node without changing the input.
+        graph = copy.deepcopy(in_graph)
+        target = _add_virtual_sink(graph)
+    else:
+        graph = in_graph
+        target = target
+
+    return graph, target
 
 
 def _add_virtual_sink(graph):
