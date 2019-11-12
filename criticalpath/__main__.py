@@ -9,12 +9,17 @@ parser = argparse.ArgumentParser(
 parser.add_argument('depfile', help='dependency graph in graphviz dot format')
 parser.add_argument('stats_dirs', nargs='+',
                     help='one or more buildstats directories')
+parser.add_argument('-t', '--target', help='find critical path up to target')
+parser.add_argument('-s', '--source', help='find critical path from source')
 
 
-def main(depfile, stats_dirs):
-    graph = load_graph(depfile)
-    weights = load_weights(stats_dirs, graph)
-    critical_path = criticalpath.find_critical_path(graph, weights)
+def main(args):
+    graph = load_graph(args.depfile)
+    weights = load_weights(args.stats_dirs, graph)
+    critical_path = criticalpath.find_critical_path(graph,
+                                                    weights,
+                                                    args.source,
+                                                    args.target)
 
     for node in critical_path:
         print("{node} {weight}".format(node=node, weight=weights[node]))
@@ -32,4 +37,4 @@ def load_weights(stats_dirs, graph):
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    main(args.depfile, args.stats_dirs)
+    main(args)
