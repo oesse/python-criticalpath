@@ -71,6 +71,22 @@ def test_load_elapsed_time_for_missing_statsfile():
     assert time == 0
 
 
+def test_load_elapsed_time_for_edk_package():
+    stub_filesystem = StubFilesystem({
+        "somedir": ["ovmf-edk2-stable201905-r0"]
+    }, {
+        "somedir/ovmf-edk2-stable201905-r0/do_compile": """Event: TaskStarted
+Started: 1572226085.36
+Elapsed time: 585.36 seconds
+Ended: 1572226615.15
+"""
+    })
+
+    buildstats_cache = BuildstatsCache(["somedir"], stub_filesystem)
+    time = buildstats_cache.load_elapsed_time("ovmf.do_compile")
+    assert time == 585.36
+
+
 class StubFilesystem:
     def __init__(self, dir_map, file_map):
         self.dir_map = dir_map
