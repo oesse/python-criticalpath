@@ -39,15 +39,23 @@ def _count_incoming_edges(graph):
     return in_degree
 
 
-def find_critical_path(in_graph, weights):
+def find_critical_path(in_graph, weights, source=None, target=None):
     """Return the critical path through the graph considering given weights"""
     import copy
-    graph = copy.deepcopy(in_graph)
 
-    virtual_sink = _add_virtual_sink(graph)
+    in_target = target
+
+    if not target:
+        graph = copy.deepcopy(in_graph)
+        target = _add_virtual_sink(graph)
+    else:
+        graph = in_graph
 
     top_order = topological_sort(graph)
-    roots = _take_roots(top_order, graph)
+    if not source:
+        roots = _take_roots(top_order, graph)
+    else:
+        roots = [source]
 
     distances = {node: (0 if node in roots else float('-inf'))
                  for node in list(graph)}
@@ -59,8 +67,12 @@ def find_critical_path(in_graph, weights):
             if distances[adjacent_node] < d:
                 distances[adjacent_node] = d
                 predecessor_nodes[adjacent_node] = node
+    path = _construct_path(predecessor_nodes, target)
 
-    return _construct_path(predecessor_nodes, virtual_sink)
+    if in_target:
+        path.append(in_target)
+
+    return path
 
 
 def _add_virtual_sink(graph):

@@ -41,3 +41,33 @@ def test_find_critical_path_string_node_ids():
                "d": 1}
 
     assert find_critical_path(graph, weights) == ["a", "b", "d"]
+
+
+def test_find_critical_path_from_specific_target():
+    graph = {}
+    add_edge(graph, 0, 1)
+    add_edge(graph, 0, 2)
+    add_edge(graph, 1, 3)
+    add_edge(graph, 2, 3)
+    add_edge(graph, 3, 4)
+    weights = {0: 1,
+               1: 2,
+               2: 1,
+               3: 1}
+
+    assert find_critical_path(graph, weights, target=3) == [0, 1, 3]
+
+
+def test_find_critical_path_from_specific_source():
+    graph = {}
+    add_edge(graph, 0, 1)
+    add_edge(graph, 0, 2)
+    add_edge(graph, 1, 3)
+    add_edge(graph, 2, 3)
+    add_edge(graph, 3, 4)
+    weights = {0: 1,
+               1: 2,
+               2: 1,
+               3: 1}
+
+    assert find_critical_path(graph, weights, source=1) == [1, 3, 4]
