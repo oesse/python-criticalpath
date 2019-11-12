@@ -46,10 +46,7 @@ def find_critical_path(in_graph, weights, source=None, target=None):
     graph, target = _setup_target(in_graph, in_target)
 
     top_order = topological_sort(graph)
-    if not source:
-        roots = _take_roots(top_order, graph)
-    else:
-        roots = [source]
+    roots = [source] if source else _take_roots(top_order, graph)
 
     distances = {node: (0 if node in roots else float('-inf'))
                  for node in list(graph)}
